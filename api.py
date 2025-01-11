@@ -12,11 +12,11 @@ DB_CONFIG = {
     "database": "gym_management"
 }
 
-# Get a database connection
+
 def get_db_connection():
     return mysql.connector.connect(**DB_CONFIG)
 
-# Custom JSON encoder to handle special data types
+
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, (date, datetime)):
@@ -25,7 +25,6 @@ class CustomJSONEncoder(json.JSONEncoder):
             return float(obj)
         return super().default(obj)
 
-# Request Handler
 class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
@@ -44,7 +43,6 @@ class RequestHandler(BaseHTTPRequestHandler):
                         self.send_error(404, "Invalid endpoint")
                         return
 
-            # Respond with the query result
             response_body = json.dumps(result, cls=CustomJSONEncoder)
             self.send_response(200)
             self.send_header("Content-type", "application/json")
@@ -81,7 +79,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                         self.send_error(404, "Invalid endpoint")
                         return
 
-            # Respond with success
+        
             self.send_response(201)
             self.send_header("Content-type", "application/json")
             self.end_headers()
@@ -104,7 +102,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                         """, (data['payment_status'], member_id))
                         conn.commit()
 
-                # Respond with success
+              
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
@@ -124,7 +122,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                         cursor.execute("DELETE FROM members WHERE member_id = %s", (member_id,))
                         conn.commit()
 
-                # Respond with success
+              
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
@@ -135,7 +133,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         except Exception as e:
             self.send_error(500, f"Server error: {str(e)}")
 
-# Run the HTTP server
+
 def run(server_class=HTTPServer, handler_class=RequestHandler, port=8080):
     server_address = ("", port)
     httpd = server_class(server_address, handler_class)
